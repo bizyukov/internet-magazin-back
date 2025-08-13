@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { CartService } from 'src/cart/cart.service';
 import { Product } from '../products/product.model';
-import { User } from '../users/user.model';
+import { User } from '../user/user.model';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -226,12 +226,34 @@ export class OrdersService {
     return this.create(userId, createOrderDto);
   }
 
+  async findRecentOrders(limit = 5): Promise<OrderResponseDto[]> {
+    const orders = await this.orderModel.findAll({
+      order: [['createdAt', 'DESC']],
+      limit,
+      include: [
+        User,
+        {
+          model: OrderItem,
+          include: [Product],
+        },
+      ],
+    });
+
+    return orders.map((order) => this.mapToResponseDto(order));
+  }
+
   mapToResponseDto(order: Order): OrderResponseDto {
     return {
       id: order.id,
       userId: order.userId,
       //shippingAddress: order.shippingAddress,
       //paymentMethod: order.paymentMethod,
+      user: {
+        id: order.user?.id,
+        name: order.user?.name,
+        email: order.user?.email,
+        role: order.user?.role,
+      },
       status: order.status as OrderStatus,
       total: order.total,
       items: order.items.map((item) => ({

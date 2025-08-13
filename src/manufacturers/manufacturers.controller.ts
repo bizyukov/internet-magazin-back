@@ -19,6 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -32,9 +33,9 @@ import { ManufacturersService } from './manufacturers.service';
 export class ManufacturersController {
   constructor(private readonly manufacturersService: ManufacturersService) {}
 
-  @Post()
+  /* @Post()
   @ApiBearerAuth()
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @ApiOperation({ summary: 'Создать нового производителя (админ/менеджер)' })
   @ApiResponse({
@@ -46,7 +47,7 @@ export class ManufacturersController {
     @Body() createManufacturerDto: CreateManufacturerDto,
   ): Promise<ManufacturerResponseDto> {
     return this.manufacturersService.create(createManufacturerDto);
-  }
+  } */
 
   @Get()
   @ApiOperation({ summary: 'Получить список производителей' })

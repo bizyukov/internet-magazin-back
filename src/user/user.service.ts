@@ -1,14 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
+import { ChangePasswordDto } from 'src/user/dto/change-password.dto';
+import { UpdateProfileDto } from 'src/user/dto/update-profile.dto';
+import { CreateUserDto } from '../admin/dto/create-user.dto';
+import { UpdateUserDto } from '../admin/dto/update-user.dto';
 import { UserRole } from '../common/enums/user-role.enum';
 import { User } from './user.model';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectModel(User)
     private userModel: typeof User,
@@ -18,15 +24,19 @@ export class UsersService {
     return this.userModel.findOne({ where: { email } });
   }
 
+  async findByEmailWithPassword(email: string): Promise<User | null> {
+    return this.userModel.scope('withPassword').findOne({ where: { email } });
+  }
+
   async findById(id: number): Promise<User | null> {
     return this.userModel.findByPk(id);
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    //const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     return this.userModel.create({
       ...createUserDto,
-      password: hashedPassword,
+      //password: hashedPassword,
       role: createUserDto.role || UserRole.USER,
     });
   }
@@ -113,5 +123,50 @@ export class UsersService {
     }
 
     return user.update({ isActive: true });
+  }
+
+  async updateProfile(
+    userId: number,
+    updateDto: UpdateProfileDto,
+  ): Promise<User | null> {
+    const user = await this.findById(userId);
+
+    if (user) {
+      // Обновляем только переданные поля
+      if (updateDto.name) user.name = updateDto.name;
+      if (updateDto.email) user.email = updateDto.email;
+
+      await user.save();
+      return this.userModel.findByPk(userId); // Возвращаем обновленного пользователя без пароля
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  async changePassword(
+    userId: number,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    const user = await this.userModel.scope('withPassword').findByPk(userId);
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    // Проверяем текущий пароль
+    const isPasswordValid = await bcrypt.compare(
+      changePasswordDto.currentPassword,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new ForbiddenException('Неверный текущий пароль');
+    }
+
+    // Хешируем новый пароль
+    //const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(changePasswordDto.newPassword, 10);
+
+    await user.save();
   }
 }

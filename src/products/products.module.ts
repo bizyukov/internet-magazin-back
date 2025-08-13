@@ -3,6 +3,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ManufacturersModule } from 'src/manufacturers/manufacturers.module';
 import { AuthModule } from '../auth/auth.module';
+import { AdminProductsController } from './admin-products.controller';
 import { Product } from './product.model';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
@@ -14,7 +15,7 @@ import { ProductsService } from './products.service';
     forwardRef(() => ManufacturersModule),
     forwardRef(() => AuthModule),
   ],
-  controllers: [ProductsController],
+  controllers: [ProductsController, AdminProductsController],
   providers: [ProductsService],
   exports: [SequelizeModule.forFeature([Product]), ProductsService],
 })

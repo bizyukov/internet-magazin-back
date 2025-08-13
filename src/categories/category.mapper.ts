@@ -5,16 +5,18 @@ export function mapCategoryToResponseDto(
   category: Category,
 ): CategoryResponseDto {
   return {
-    id: category.id,
-    name: category.name,
-    description: category.description,
-    imageUrl: category.imageUrl,
-    parentId: category.parentId,
-    position: category.position,
-    isActive: category.isActive,
-    createdAt: category.createdAt,
-    updatedAt: category.updatedAt,
+    id: category.dataValues.id,
+    name: category.dataValues.name,
+    description: category.dataValues.description,
+    imageUrl: category.dataValues.imageUrl,
+    parentId: category.dataValues.parentId,
+    position: category.dataValues.position,
+    isActive: category.dataValues.isActive,
+    createdAt: category.dataValues.createdAt,
+    updatedAt: category.dataValues.updatedAt,
     children:
-      category.children?.map((child) => mapCategoryToResponseDto(child)) || [],
+      category.dataValues.children?.map((child) =>
+        mapCategoryToResponseDto(child),
+      ) || [],
   };
 }

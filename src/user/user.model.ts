@@ -17,13 +17,6 @@ import { Order } from 'src/orders/order.model';
   },
 })
 export class User extends Model {
-  /* @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  })
-  id: number; */
-
   @Column({
     type: DataType.STRING(100),
     allowNull: false,
@@ -48,8 +41,7 @@ export class User extends Model {
     type: DataType.STRING,
     allowNull: false,
     set(value: string) {
-      const salt = bcrypt.genSaltSync(10);
-      this.setDataValue('password', bcrypt.hashSync(value, salt));
+      this.setDataValue('password', bcrypt.hashSync(value, 10));
     },
   })
   password: string;
@@ -78,7 +70,7 @@ export class User extends Model {
   @HasMany(() => Cart)
   carts: Cart[];
 
-  comparePassword(password: string): boolean {
-    return bcrypt.compareSync(password, this.password);
+  async comparePassword(password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password);
   }
 }

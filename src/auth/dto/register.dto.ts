@@ -17,10 +17,10 @@ export class RegisterDto {
 
   @ApiProperty({
     example: 'password123',
-    description: 'Пароль (мин. 6 символов)',
-    minLength: 6,
+    description: 'Пароль (мин. 4 символов)',
+    minLength: 4,
   })
   @IsString()
-  @MinLength(6)
+  @MinLength(4)
   password: string;
 }

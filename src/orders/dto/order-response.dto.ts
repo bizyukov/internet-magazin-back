@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderStatus } from '../interfaces/order-status.enum';
 import { OrderItemResponseDto } from './order-item-response.dto';
+import { UserResponseDto } from 'src/user/dto/user-response.dto';
 
 export class OrderResponseDto {
   @ApiProperty({ description: 'ID заказа' })
@@ -33,6 +34,12 @@ export class OrderResponseDto {
     },
   })
   paymentMethod: Record<string, any>; */
+
+  @ApiProperty({
+    description: 'Пользователь, оформивший заказ',
+    type: UserResponseDto,
+  })
+  user: UserResponseDto;
 
   @ApiProperty({ enum: OrderStatus, description: 'Статус заказа' })
   status: OrderStatus;

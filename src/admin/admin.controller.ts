@@ -15,28 +15,28 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserService } from 'src/user/user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 import { RolesGuard } from '../common/guards/roles.guard';
+import { User } from '../user/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.model';
-import { UsersService } from './users.service';
 
 @ApiTags('Пользователи')
 @ApiBearerAuth()
-@Controller('users')
+@Controller('admin/users')
 @UseGuards(JwtAuthGuard, RolesGuard)
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class AdminController {
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Создание нового пользователя (админ)' })
   @ApiResponse({ status: 201, description: 'Пользователь создан', type: User })
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createUserDto);
+    return this.userService.create(createUserDto);
   }
 
   @Get()
@@ -53,7 +53,7 @@ export class UsersController {
     @Query('search') search?: string,
     @Query('role') role?: UserRole,
   ) {
-    return this.usersService.findAll(page, limit, search, role);
+    return this.userService.findAll(page, limit, search, role);
   }
 
   @Get(':id')
@@ -62,7 +62,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь', type: User })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   async findOne(@Param('id') id: string): Promise<User | null> {
-    return this.usersService.findById(+id);
+    return this.userService.findById(+id);
   }
 
   @Put(':id')
@@ -78,7 +78,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.usersService.update(+id, updateUserDto);
+    return this.userService.update(+id, updateUserDto);
   }
 
   @Put(':id/role')
@@ -90,7 +90,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body('role') role: UserRole,
   ): Promise<User> {
-    return this.usersService.updateRole(+id, role);
+    return this.userService.updateRole(+id, role);
   }
 
   @Put(':id/block')
@@ -103,7 +103,7 @@ export class UsersController {
   })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   async block(@Param('id') id: string): Promise<User> {
-    return this.usersService.blockUser(+id);
+    return this.userService.blockUser(+id);
   }
 
   @Put(':id/unblock')
@@ -116,7 +116,7 @@ export class UsersController {
   })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   async unblock(@Param('id') id: string): Promise<User> {
-    return this.usersService.unblockUser(+id);
+    return this.userService.unblockUser(+id);
   }
 
   @Delete(':id')
@@ -125,6 +125,6 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь удален' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   async remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(+id);
+    return this.userService.remove(+id);
   }
 }

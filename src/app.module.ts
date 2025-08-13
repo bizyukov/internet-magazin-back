@@ -9,17 +9,11 @@ import { Product } from './products/product.model';
 
 import { CartItem } from './cart/cart-item.model';
 import { Cart } from './cart/cart.model';
-import { CartModule } from './cart/cart.module';
-import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.model';
 import { Manufacturer } from './manufacturers/manufacturer.model';
-import { ManufacturersModule } from './manufacturers/manufacturers.module';
 import { OrderItem } from './orders/order-item.model';
 import { Order } from './orders/order.model';
-import { OrdersModule } from './orders/orders.module';
-import { ProductsModule } from './products/products.module';
-import { User } from './users/user.model';
-import { UsersModule } from './users/users.module';
+import { User } from './user/user.model';
 
 @Module({
   imports: [
@@ -48,12 +42,13 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
     }),
     AuthModule,
-    UsersModule,
-    ProductsModule,
-    CategoriesModule,
-    ManufacturersModule,
-    OrdersModule,
-    CartModule,
+    //AdminModule,
+    //UserModule,
+    //ProductsModule,
+    //CategoriesModule,
+    //ManufacturersModule,
+    //OrdersModule,
+    //CartModule,
   ],
 })
 export class AppModule {}

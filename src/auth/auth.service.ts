@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from 'src/common/enums/user-role.enum';
-import { UsersService } from 'src/users/users.service';
-import { User } from '../users/user.model';
+import { UserService } from 'src/user/user.service';
+import { User } from '../user/user.model';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Tokens } from './interfaces/tokens.interface';
@@ -12,26 +12,26 @@ import { Tokens } from './interfaces/tokens.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<Partial<User>> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.userService.findByEmailWithPassword(email);
 
     if (!user) {
       throw new UnauthorizedException('Неправильный email или пароль');
     }
 
-    const passwordValid = await bcrypt.compare(pass, user.password);
+    const passwordValid = await bcrypt.compare(pass, user?.dataValues.password);
 
     if (!passwordValid) {
       throw new UnauthorizedException('Неправильный email или пароль');
     }
 
     const { password, ...result } = user.get({ plain: true });
-    return result;
+    return { ...result, role: user.dataValues.role };
   }
 
   async login(loginDto: LoginDto): Promise<Tokens> {
@@ -40,7 +40,7 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto): Promise<Tokens> {
-    const existingUser = await this.usersService.findByEmail(registerDto.email);
+    const existingUser = await this.userService.findByEmail(registerDto.email);
 
     if (existingUser) {
       throw new UnauthorizedException(
@@ -48,10 +48,8 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    const newUser = await this.usersService.create({
+    const newUser = await this.userService.create({
       ...registerDto,
-      password: hashedPassword,
       role: 'user' as UserRole,
     });
 
@@ -64,13 +62,13 @@ export class AuthService {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
 
-      const user = await this.usersService.findById(payload.sub);
+      const user = await this.userService.findById(payload.sub);
 
       if (!user) {
         throw new UnauthorizedException('Пользователь не найден');
       }
 
-      return this.generateTokens(user);
+      return this.generateTokens(user.dataValues);
     } catch (e) {
       throw new UnauthorizedException('Недействительный токен');
     }
@@ -78,9 +76,9 @@ export class AuthService {
 
   private async generateTokens(user: Partial<User>): Promise<Tokens> {
     const payload = {
+      role: user.role,
       email: user.email,
       sub: user.id,
-      role: user.role,
     };
 
     const accessToken = this.jwtService.sign(payload, {

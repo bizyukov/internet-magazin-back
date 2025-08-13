@@ -5,14 +5,14 @@ export function mapManufacturerToResponseDto(
   manufacturer: Manufacturer,
 ): ManufacturerResponseDto {
   return {
-    id: manufacturer.id,
-    name: manufacturer.name,
-    description: manufacturer.description,
-    country: manufacturer.country,
-    website: manufacturer.website,
-    logoUrl: manufacturer.logoUrl,
-    isActive: manufacturer.isActive,
-    createdAt: manufacturer.createdAt,
-    updatedAt: manufacturer.updatedAt,
+    id: manufacturer.dataValues.id,
+    name: manufacturer.dataValues.name,
+    description: manufacturer.dataValues.description,
+    country: manufacturer.dataValues.country,
+    website: manufacturer.dataValues.website,
+    logoUrl: manufacturer.dataValues.logoUrl,
+    isActive: manufacturer.dataValues.isActive,
+    createdAt: manufacturer.dataValues.createdAt,
+    updatedAt: manufacturer.dataValues.updatedAt,
   };
 }

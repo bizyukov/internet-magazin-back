@@ -3,7 +3,8 @@ import { ManufacturerResponseDto } from 'src/manufacturers/dto/manufacturer-resp
 import { ProductResponseDto } from './dto/product-response.dto';
 import { Product } from './product.model';
 
-export function mapProductToResponseDto(product: Product): ProductResponseDto {
+export function mapProductToResponseDto(data: Product): ProductResponseDto {
+  const product = data.dataValues;
   return {
     id: product.id,
     name: product.name,

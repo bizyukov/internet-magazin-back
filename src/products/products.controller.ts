@@ -32,7 +32,7 @@ import { ProductsService } from './products.service';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
+  /* @Post()
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
@@ -45,9 +45,10 @@ export class ProductsController {
   async create(
     @Body() createProductDto: CreateProductDto,
   ): Promise<ProductResponseDto> {
+    console.log('ProductsController');
     return this.productsService.create(createProductDto);
   }
-
+ */
   @Get()
   @ApiOperation({ summary: 'Получить список товаров' })
   @ApiQuery({
