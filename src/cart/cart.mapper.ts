@@ -2,7 +2,9 @@ import { Cart } from './cart.model';
 import { CartItemResponseDto } from './dto/cart-item-response.dto';
 import { CartResponseDto } from './dto/cart-response.dto';
 
-export function mapCartToResponseDto(cart: Cart): CartResponseDto {
+export function mapCartToResponseDto(data: Cart): CartResponseDto {
+  const cart = data.dataValues;
+  console.log('cart', cart);
   return {
     id: cart.id,
     userId: cart.userId,

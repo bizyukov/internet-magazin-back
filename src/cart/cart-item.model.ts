@@ -14,13 +14,6 @@ import { Cart } from './cart.model';
   timestamps: true,
 })
 export class CartItem extends Model {
-  /* @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  })
-  id: number; */
-
   @ForeignKey(() => Cart)
   @Column({
     type: DataType.INTEGER,
@@ -76,16 +69,4 @@ export class CartItem extends Model {
     },
   })
   total: number;
-
-  /* @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW,
-  })
-  createdAt: Date;
-
-  @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW,
-  })
-  updatedAt: Date; */
 }

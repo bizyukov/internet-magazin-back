@@ -10,6 +10,9 @@ import { Product } from './products/product.model';
 import { CartItem } from './cart/cart-item.model';
 import { Cart } from './cart/cart.model';
 import { Category } from './categories/category.model';
+import { CheckoutModule } from './checkout/checkout.module';
+import { Address } from './checkout/entities/address.entity';
+import { PaymentMethod } from './checkout/entities/payment-method.entity';
 import { Manufacturer } from './manufacturers/manufacturer.model';
 import { OrderItem } from './orders/order-item.model';
 import { Order } from './orders/order.model';
@@ -37,6 +40,8 @@ import { User } from './user/user.model';
         OrderItem,
         Cart,
         CartItem,
+        Address,
+        PaymentMethod,
       ],
       autoLoadModels: true,
       synchronize: true,
@@ -49,6 +54,7 @@ import { User } from './user/user.model';
     //ManufacturersModule,
     //OrdersModule,
     //CartModule,
+    CheckoutModule,
   ],
 })
 export class AppModule {}

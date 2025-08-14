@@ -32,6 +32,8 @@ export class CartService {
       cart = await this.cartModel.create({ userId });
     }
 
+    console.log('cart1', cart);
+
     return cart;
   }
 
