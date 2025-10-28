@@ -4,7 +4,6 @@ import { CartResponseDto } from './dto/cart-response.dto';
 
 export function mapCartToResponseDto(data: Cart): CartResponseDto {
   const cart = data.dataValues;
-  console.log('cart', cart);
   return {
     id: cart.id,
     userId: cart.userId,
@@ -16,7 +15,8 @@ export function mapCartToResponseDto(data: Cart): CartResponseDto {
   };
 }
 
-export function mapCartItemToResponseDto(item: any): CartItemResponseDto {
+export function mapCartItemToResponseDto(data: any): CartItemResponseDto {
+  const item = data.dataValues;
   return {
     id: item.id,
     productId: item.productId,

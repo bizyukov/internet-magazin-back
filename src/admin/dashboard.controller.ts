@@ -38,7 +38,7 @@ export class DashboardController {
     return this.dashboardService.getStats();
   }
 
-  @Get('recent-orders')
+  /* @Get('recent-orders')
   @ApiOperation({ summary: 'Последние заказы' })
   @ApiQuery({
     name: 'limit',
@@ -50,9 +50,9 @@ export class DashboardController {
   @ApiResponse({ status: 200, description: 'Список последних заказов' })
   async getRecentOrders(@Query('limit') limit = 5) {
     return this.dashboardService.getRecentOrders(limit);
-  }
+  } */
 
-  @Get('top-products')
+  /* @Get('top-products')
   @ApiOperation({ summary: 'Популярные товары' })
   @ApiQuery({
     name: 'limit',
@@ -72,6 +72,7 @@ export class DashboardController {
     },
   })
   async getTopProducts(@Query('limit') limit = 5) {
+    console.log('[getTopProducts]');
     return this.dashboardService.getTopProducts(limit);
-  }
+  } */
 }

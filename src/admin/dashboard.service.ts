@@ -35,25 +35,13 @@ export class DashboardService {
     };
   }
 
-  async getRecentOrders(limit = 5) {
+  /* async getRecentOrders(limit = 5) {
     return this.orderModel.findAll({
       order: [['createdAt', 'DESC']],
       limit,
       include: [{ all: true }],
     });
-  }
+  } */
 
-  async getTopProducts(limit = 5) {
-    return this.sequelize.query(`
-      SELECT 
-        product_id AS "productId",
-        SUM(quantity) AS "totalSold"
-      FROM order_items
-      GROUP BY product_id
-      ORDER BY "totalSold" DESC
-      LIMIT ${limit}
-    ` /* , */ /* {
-      type: this.sequelize.QueryTypes.SELECT,
-    } */);
-  }
+  
 }

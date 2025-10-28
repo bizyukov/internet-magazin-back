@@ -180,8 +180,8 @@ export class ProductsController {
   })
   async getPopularProducts(
     @Query('limit') limit = 10,
-  ): Promise<ProductResponseDto[]> {
-    return this.productsService.getPopularProducts(limit);
+  ): Promise<any/* ProductResponseDto */[]> {
+    return this.productsService.getTopProducts(limit);
   }
 
   @Get(':id')

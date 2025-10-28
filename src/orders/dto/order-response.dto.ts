@@ -1,39 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserResponseDto } from 'src/user/dto/user-response.dto';
 import { OrderStatus } from '../interfaces/order-status.enum';
 import { OrderItemResponseDto } from './order-item-response.dto';
-import { UserResponseDto } from 'src/user/dto/user-response.dto';
 
 export class OrderResponseDto {
   @ApiProperty({ description: 'ID заказа' })
-  id: string;
+  uuid: string;
 
   @ApiProperty({ description: 'ID пользователя' })
   userId: number;
 
-  /* @ApiProperty({
-    type: 'object',
+  @ApiProperty({
     description: 'Адрес доставки',
-    example: {
-      fullName: 'Иван Иванов',
-      street: 'ул. Ленина, д. 15',
-      city: 'Москва',
-      region: 'Московская область',
-      zipCode: '125009',
-      country: 'Россия',
-      phone: '+79161234567',
-    },
   })
   shippingAddress: Record<string, any>;
 
   @ApiProperty({
-    type: 'object',
     description: 'Способ оплаты',
-    example: {
-      type: 'card',
-      details: { cardLastDigits: '1234' },
-    },
   })
-  paymentMethod: Record<string, any>; */
+  paymentMethod: Record<string, any>;
 
   @ApiProperty({
     description: 'Пользователь, оформивший заказ',

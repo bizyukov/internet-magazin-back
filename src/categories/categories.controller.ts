@@ -124,7 +124,8 @@ export class CategoriesController {
 
   @Put(':id')
   @ApiBearerAuth()
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  //@UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @ApiOperation({ summary: 'Обновить категорию (админ/менеджер)' })
   @ApiParam({ name: 'id', description: 'ID категории', type: Number })

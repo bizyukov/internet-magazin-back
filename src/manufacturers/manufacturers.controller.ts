@@ -33,7 +33,7 @@ import { ManufacturersService } from './manufacturers.service';
 export class ManufacturersController {
   constructor(private readonly manufacturersService: ManufacturersService) {}
 
-  /* @Post()
+  @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
@@ -47,7 +47,7 @@ export class ManufacturersController {
     @Body() createManufacturerDto: CreateManufacturerDto,
   ): Promise<ManufacturerResponseDto> {
     return this.manufacturersService.create(createManufacturerDto);
-  } */
+  }
 
   @Get()
   @ApiOperation({ summary: 'Получить список производителей' })

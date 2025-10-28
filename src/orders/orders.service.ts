@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { CartService } from 'src/cart/cart.service';
+import { PaginatedResponse } from 'src/common/interfaces/paginated-response.model';
 import { Product } from '../products/product.model';
 import { User } from '../user/user.model';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -28,7 +29,9 @@ export class OrdersService {
     userId: number,
     createOrderDto: CreateOrderDto,
   ): Promise<OrderResponseDto | null> {
-    return this.sequelize.transaction(async (transaction) => {
+    let order: Order | null = null;
+
+    await this.sequelize.transaction(async (transaction) => {
       // Рассчет общей суммы
       /* const total = createOrderDto.items.reduce(
         (sum, item) => sum + item.price * item.quantity,
@@ -55,21 +58,27 @@ export class OrdersService {
       }
 
       // Создание заказа
-      const order = await this.orderModel.create(
-        {
-          userId,
-          total: cart.total,
-          status: OrderStatus.PENDING,
-          shippingAddress: createOrderDto.shippingAddress,
-          paymentMethod: createOrderDto.paymentMethod,
-          notes: createOrderDto.notes,
-        },
-        { transaction },
-      );
+      order = (
+        await this.orderModel.create(
+          {
+            userId,
+            total: cart.total,
+            status: OrderStatus.PENDING,
+            shippingAddress: createOrderDto.shippingAddress,
+            paymentMethod: createOrderDto.paymentMethod,
+            notes: createOrderDto.notes,
+          },
+          { transaction },
+        )
+      ).dataValues;
+
+      if (!order) {
+        throw new Error(`Заказ не создан`);
+      }
 
       // Создание элементов заказа
       const orderItems = createOrderDto.items.map((item) => ({
-        orderId: order.id,
+        orderId: order!.uuid,
         productId: item.productId,
         name: item.name,
         price: item.price,
@@ -82,32 +91,52 @@ export class OrdersService {
       // Очистка корзины
       await this.cartService.clearUserCart(userId, transaction);
 
-      const orderWithItems = await this.findOrderWithItems(order.id);
+      console.log('[create] order', order);
 
-      return orderWithItems ? this.mapToResponseDto(orderWithItems) : null;
+      console.log('[create] orderItems', orderItems);
+
+      //transaction.commit();
     });
+
+    const uuid = order!.uuid;
+
+    const orderWithItems = order ? await this.findOrderWithItems(uuid) : null;
+
+    return orderWithItems ? this.mapToResponseDto(orderWithItems) : null;
   }
 
-  async findOrderById(id: string): Promise<Order | null> {
-    return this.orderModel.findByPk(id, {
-      include: [User, { model: OrderItem, include: [Product] }],
-    });
-  }
-
-  async findOrderWithItems(id: string): Promise<Order | null> {
-    return this.orderModel.findByPk(id, {
+  async findOrderById(uuid: string): Promise<Order | null> {
+    return this.orderModel.findByPk(uuid, {
       include: [User, OrderItem],
     });
   }
 
-  async getUserOrders(userId: number): Promise<OrderResponseDto[]> {
+  async findOrderWithItems(uuid: string): Promise<Order | null> {
+    return await this.orderModel.findByPk(uuid, {
+      include: [User, OrderItem],
+    });
+  }
+
+  async getUserOrders(
+    userId: number,
+  ): Promise<PaginatedResponse<OrderResponseDto>> {
     const orders = await this.orderModel.findAll({
       where: { userId },
-      include: [OrderItem],
+      include: [User, OrderItem],
       order: [['createdAt', 'DESC']],
     });
 
-    return orders.map((order) => this.mapToResponseDto(order));
+    const mappedOrders = orders.map((order) => this.mapToResponseDto(order));
+
+    const response = {
+      items: mappedOrders,
+      total: mappedOrders.length,
+      page: 1,
+      limit: 0,
+      totalPages: 1,
+    };
+
+    return response;
   }
 
   async updateOrderStatus(
@@ -230,29 +259,28 @@ export class OrdersService {
     const orders = await this.orderModel.findAll({
       order: [['createdAt', 'DESC']],
       limit,
-      include: [
-        User,
-        {
-          model: OrderItem,
-          include: [Product],
-        },
-      ],
+      include: [User, OrderItem],
     });
 
     return orders.map((order) => this.mapToResponseDto(order));
   }
 
-  mapToResponseDto(order: Order): OrderResponseDto {
+  mapToResponseDto(data: Order): OrderResponseDto {
+    const order = data.dataValues;
+    const user = order.user.dataValues;
+    order.user = user;
+    order.items = order.items.map((i) => i.dataValues);
+
     return {
-      id: order.id,
+      uuid: order.uuid,
       userId: order.userId,
-      //shippingAddress: order.shippingAddress,
-      //paymentMethod: order.paymentMethod,
+      shippingAddress: order.shippingAddress,
+      paymentMethod: order.paymentMethod,
       user: {
-        id: order.user?.id,
-        name: order.user?.name,
-        email: order.user?.email,
-        role: order.user?.role,
+        id: user?.id,
+        name: user?.name,
+        email: user?.email,
+        role: user?.role,
       },
       status: order.status as OrderStatus,
       total: order.total,

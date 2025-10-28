@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
+import sequelize from 'sequelize/lib/sequelize';
 import { Category } from 'src/categories/category.model';
 import { Manufacturer } from 'src/manufacturers/manufacturer.model';
+import { OrderItem } from 'src/orders/order-item.model';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -131,10 +133,58 @@ export class ProductsService {
     return products.map(mapProductToResponseDto);
   }
 
-  async getPopularProducts(limit = 10): Promise<ProductResponseDto[]> {
+  /* async getPopularProducts(limit = 10): Promise<ProductResponseDto[]> {
     // В реальном приложении здесь была бы логика определения популярности
     // Например, по количеству заказов или просмотров
     // Здесь просто возвращаем недавно добавленные
     return this.getNewProducts(limit);
+  } */
+
+  async getTopProducts(limit = 5) {
+    console.log('[getTopProducts2]');
+    /* return this.sequelize.query(`
+      SELECT 
+        product_id AS "productId",
+        SUM(quantity) AS "totalSold"
+      FROM order_items
+      GROUP BY product_id
+      ORDER BY "totalSold" DESC
+      LIMIT ${limit}
+    `); */
+
+    /* const result = await OrderItem.findAll({
+      attributes: [
+        'productId',
+        'name',
+        'price',
+        'imageUrl',
+        [sequelize.fn('SUM', sequelize.col('quantity')), 'totalSold'],
+        [sequelize.fn('SUM', sequelize.col('price')), 'totalSum'],
+      ],
+      group: ['productId'],
+      order: [[sequelize.literal('"totalSold"'), 'DESC']],
+      limit,
+    }); */
+
+    const result = await OrderItem.findAll({
+      attributes: [
+        'productId',
+        [sequelize.fn('SUM', sequelize.col('OrderItem.quantity')), 'totalSold'],
+      ],
+      include: [
+        {
+          model: Product,
+          attributes: ['name', 'price', 'imageUrl'],
+        },
+      ],
+      group: ['OrderItem.productId', 'product.id'], // Заменили 'Product.id' на 'product.id'
+      order: [[sequelize.literal('"totalSold"'), 'DESC']],
+      limit: 5,
+      //raw: true,
+    });
+
+    console.log('getTopProducts', result);
+
+    return result;
   }
 }

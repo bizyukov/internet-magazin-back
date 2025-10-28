@@ -18,6 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import express from 'express';
+import { PaginatedResponse } from 'src/common/interfaces/paginated-response.model';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
@@ -61,7 +62,7 @@ export class OrdersController {
   })
   async getUserOrders(
     @Req() req: express.Request,
-  ): Promise<OrderResponseDto[]> {
+  ): Promise<PaginatedResponse<OrderResponseDto>> {
     const userId = req.user?.['id'];
     return this.ordersService.getUserOrders(userId);
   }
@@ -78,15 +79,18 @@ export class OrdersController {
   async getOrderById(
     @Req() req: express.Request,
     @Param('id') id: string,
-  ): Promise<OrderResponseDto> {
+  ): Promise<OrderResponseDto | null> {
     const userId = req.user?.['id'];
-    const order = await this.ordersService.findOrderById(id);
+    const order =
+      await this.ordersService.findOrderWithItems(id); /* ?.dataValues */
 
-    if (!order || order.userId !== userId) {
+    const dataValues = order ? order.dataValues : {};
+
+    if (!dataValues || dataValues.userId !== userId) {
       throw new NotFoundException('Заказ не найден');
     }
 
-    return this.ordersService.mapToResponseDto(order);
+    return order ? this.ordersService.mapToResponseDto(order) : null;
   }
 
   @Put(':id/status')

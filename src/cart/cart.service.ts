@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -32,8 +36,6 @@ export class CartService {
       cart = await this.cartModel.create({ userId });
     }
 
-    console.log('cart1', cart);
-
     return cart;
   }
 
@@ -42,10 +44,13 @@ export class CartService {
     addToCartDto: AddToCartDto,
   ): Promise<CartResponseDto | null> {
     return this.sequelize.transaction(async (transaction) => {
-      const cart = await this.getOrCreateUserCart(userId);
+      const cart = (await this.getOrCreateUserCart(userId)).dataValues;
       const product = await this.productModel.findByPk(addToCartDto.productId, {
         transaction,
+        raw: true,
       });
+
+      console.log('product', product);
 
       if (!product) {
         throw new NotFoundException('Товар не найден');
@@ -63,21 +68,31 @@ export class CartService {
         transaction,
       });
 
+      console.log('cartItem', cartItem);
+
       if (cartItem) {
-        cartItem.quantity += addToCartDto.quantity;
+        cartItem.dataValues.quantity += addToCartDto.quantity;
         await cartItem.save({ transaction });
       } else {
-        cartItem = await this.cartItemModel.create(
-          {
+        try {
+          const dataToCart = {
             cartId: cart.id,
             productId: addToCartDto.productId,
             name: product.name,
             price: product.price,
             quantity: addToCartDto.quantity,
             imageUrl: product.imageUrl,
-          },
-          { transaction },
-        );
+          };
+
+          console.log('dataToCart', dataToCart);
+
+          cartItem = await this.cartItemModel.create(dataToCart, {
+            transaction,
+          });
+        } catch (e) {
+          console.log('create cart item error:', e);
+          throw new BadRequestException('create cart item error');
+        }
       }
 
       await this.recalculateCartTotals(cart.id, transaction);
@@ -92,14 +107,14 @@ export class CartService {
 
   async updateCartItem(
     userId: number,
-    itemId: number,
+    productId: number,
     updateDto: UpdateCartItemDto,
   ): Promise<CartResponseDto | null> {
     return this.sequelize.transaction(async (transaction) => {
       const cart = await this.getOrCreateUserCart(userId);
       const cartItem = await this.cartItemModel.findOne({
         where: {
-          id: itemId,
+          productId,
           cartId: cart.id,
         },
         transaction,
@@ -131,13 +146,13 @@ export class CartService {
 
   async removeFromCart(
     userId: number,
-    itemId: number,
+    productId: number,
   ): Promise<CartResponseDto | null> {
     return this.sequelize.transaction(async (transaction) => {
       const cart = await this.getOrCreateUserCart(userId);
       const cartItem = await this.cartItemModel.findOne({
         where: {
-          id: itemId,
+          productId,
           cartId: cart.id,
         },
         transaction,
@@ -179,6 +194,7 @@ export class CartService {
 
   async getUserCart(userId: number): Promise<CartResponseDto> {
     const cart = await this.getOrCreateUserCart(userId);
+    //console.log('[GET CART]', cart);
     return mapCartToResponseDto(cart);
   }
 
@@ -191,12 +207,13 @@ export class CartService {
       transaction,
     });
 
-    const total = items.reduce((sum, item) => {
-      return sum + item.price * item.quantity;
+    const total = items.reduce((sum, { dataValues }) => {
+      console.log('sum', sum, dataValues);
+      return sum + dataValues.price * dataValues.quantity;
     }, 0);
 
-    const itemsCount = items.reduce((count, item) => {
-      return count + item.quantity;
+    const itemsCount = items.reduce((count, { dataValues }) => {
+      return count + dataValues.quantity;
     }, 0);
 
     await this.cartModel.update(

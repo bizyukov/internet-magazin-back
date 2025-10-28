@@ -91,6 +91,30 @@ export class AdminProductsController {
     );
   }
 
+  @Get('top')
+  @ApiOperation({ summary: 'Популярные товары' })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Количество товаров',
+    example: 5,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Список популярных товаров',
+    schema: {
+      example: [
+        { productId: 123, totalSold: 42 },
+        { productId: 456, totalSold: 35 },
+      ],
+    },
+  })
+  async getTopProducts(@Query('limit') limit = 5) {
+    console.log('[getTopProducts]');
+    return this.productsService.getTopProducts(limit);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Получить товар по ID (админ/менеджер)' })
   @ApiResponse({

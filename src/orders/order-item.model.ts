@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
@@ -26,6 +27,10 @@ export class OrderItem extends Model {
     allowNull: false,
   })
   productId: number;
+
+  // Добавьте эту ассоциацию
+  @BelongsTo(() => Product)
+  product: Product;
 
   @Column({
     type: DataType.STRING(255),

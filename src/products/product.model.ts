@@ -3,12 +3,14 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Scopes,
   Table,
 } from 'sequelize-typescript';
 import { Category } from 'src/categories/category.model';
 import { Manufacturer } from 'src/manufacturers/manufacturer.model';
+import { OrderItem } from 'src/orders/order-item.model';
 
 @Scopes(() => ({
   active: {
@@ -91,6 +93,9 @@ export class Product extends Model {
     defaultValue: true,
   })
   isActive: boolean;
+
+  @HasMany(() => OrderItem)
+  orderItems: OrderItem[];
 
   @ForeignKey(() => Category)
   @Column({
