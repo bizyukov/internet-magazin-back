@@ -22,23 +22,23 @@
   <img src="https://img.shields.io/github/license/bizyukov/internet-magazin-back" alt="License">
 </p>
 
-Полнофункциональное REST API для интернет-магазина с аутентификацией, корзиной, заказами, администрированием и документированным Swagger.
+A full-featured REST API for an e-commerce platform with authentication, shopping cart, orders, admin panel, and Swagger documentation.
 
-## 🚀 Основные возможности
+## 🚀 Key Features
 
-- **Аутентификация и авторизация** – JWT, роли (user, admin, manager, content)
-- **Пользователи** – регистрация, профиль, смена пароля, блокировка
-- **Товары** – CRUD, фильтрация (поиск, категория, производитель, цена), популярные/новые товары
-- **Категории** – древовидная структура, позиционирование
-- **Производители** – CRUD, фильтрация по стране
-- **Корзина** – добавление, обновление количества, удаление, очистка
-- **Заказы** – создание из корзины, изменение статуса, отмена, повтор заказа
-- **Checkout** – сохранённые адреса и способы оплаты
-- **Swagger UI** – интерактивная документация (доступна по `/swagger`)
-- **Валидация DTO** (class-validator)
-- **Sequelize ORM** с миграциями и связями (paranoid – мягкое удаление)
+- **Authentication & Authorization** – JWT, roles (user, admin, manager, content)
+- **Users** – registration, profile, password change, blocking
+- **Products** – CRUD, filtering (search, category, manufacturer, price), popular/new products
+- **Categories** – tree structure, positioning
+- **Manufacturers** – CRUD, filtering by country
+- **Shopping Cart** – add, update quantity, remove, clear
+- **Orders** – create from cart, change status, cancel, reorder
+- **Checkout** – saved addresses and payment methods
+- **Swagger UI** – interactive documentation (available at `/swagger`)
+- **DTO validation** (class-validator)
+- **Sequelize ORM** with migrations and relationships (paranoid – soft delete)
 
-## 🧱 Технологии
+## 🧱 Tech Stack
 
 - [NestJS](https://nestjs.com/) (TypeScript)
 - [Sequelize](https://sequelize.org/) + [sequelize-typescript](https://github.com/RobinBuschmann/sequelize-typescript)
@@ -47,24 +47,24 @@
 - [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
 - [Swagger](https://swagger.io/) (@nestjs/swagger)
 
-## 📦 Установка и запуск
+## 📦 Installation & Setup
 
-### Требования
+### Prerequisites
 
 - Node.js (20+)
 - PostgreSQL (16+)
 
-### Шаги
+### Steps
 
 ```bash
-# 1. Клонируйте репозиторий
+# 1. Clone the repository
 git clone https://github.com/your-username/ecommerce-backend.git
 cd ecommerce-backend
 
-# 2. Установите зависимости
+# 2. Install dependencies
 npm install
 
-# 3. Создайте файл .env в корне (пример):
+# 3. Create a .env file in the root (example):
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=postgres
@@ -74,78 +74,80 @@ JWT_SECRET=mysecretkey
 JWT_EXPIRES_IN=1h
 PORT=3000
 
-# 4. Запустите PostgreSQL и создайте базу данных (через psql или pgAdmin)
+# 4. Start PostgreSQL and create the database (via psql or pgAdmin)
 
-# 5. Запустите приложение (режим разработки)
+# 5. Run the application (development mode)
 npm run start:dev
 
-# 6. Откройте документацию Swagger
+# 6. Open Swagger documentation
 http://localhost:3000/swagger
 ```
-## 🧪 Тестирование
+## 🧪 Testing
 ```bash
-# Unit тесты
+# Unit tests
 npm test
 
-# Покрытие
+# Coverage
 npm run test:cov
 
-# E2E тесты
+# E2E tests
 npm run test:e2e
 ```
-## 📁 Структура проекта (основные модули)
+## 📁 Project Structure (main modules)
 ```bash
 src/
-├── auth/              # JWT, local стратегии, guards
-├── user/              # Пользователи (модель, сервис, контроллер)
-├── products/          # Товары (CRUD, фильтры, популярное/новое)
-├── categories/        # Категории (дерево, позиционирование)
-├── manufacturers/     # Производители
-├── cart/              # Корзина и элементы корзины
-├── orders/            # Заказы и позиции заказов
-├── checkout/          # Адреса, платежные методы
+├── auth/              # JWT, local strategies, guards
+├── user/              # Users (model, service, controller)
+├── products/          # Products (CRUD, filters, popular/new)
+├── categories/        # Categories (tree, positioning)
+├── manufacturers/     # Manufacturers
+├── cart/              # Cart and cart items
+├── orders/            # Orders and order items
+├── checkout/          # Addresses, payment methods
 ├── common/            # Guards, decorators, enums, filters
-├── config/            # Конфигурация (database, jwt)
-└── main.ts            # Входная точка (CORS, Swagger)
+├── config/            # Configuration (database, jwt)
+└── main.ts            # Entry point (CORS, Swagger)
 ```
-## 🔐 Роли и доступ
-Роль	Доступ
-user	просмотр товаров, управление своей корзиной, создание/просмотр заказов
-admin	всё, включая блокировку пользователей, изменение ролей
-manager	управление товарами, категориями, производителями, заказами
-content	(опционально) управление контентом
+## 🔐 Roles & Access
 
-## 📝 API документация
-После запуска перейдите на http://localhost:3000/swagger.
-Все эндпоинты, защищённые JWT, требуют передачи заголовка:
+| Role | Access |
+| :--- | :--- |
+| **user** | View products, manage own cart, create/view orders |
+| **admin** | Everything, including blocking users and changing roles |
+| **manager** | Manage products, categories, manufacturers, and orders |
+| **content** | (Optional) Manage site content and descriptions |
+
+## 📝 API Documentation
+After starting the app, go to http://localhost:3000/swagger.
+All JWT-protected endpoints require the following header:
 ```bash
-Authorization: Bearer <ваш_токен>
+Authorization: Bearer <your_token>
 ```
-## 🗄️ Модели данных (основные связи)
+## 🗄️ Data Models (key relationships)
 User → Order, Cart
 
 Product → Category, Manufacturer, OrderItem, CartItem
 
-Category → самореференция (parentId → children)
+Category → self-reference (parentId → children)
 
-Order → OrderItem (один ко многим)
+Order → OrderItem (one-to-many)
 
-Cart → CartItem (один ко многим)
+Cart → CartItem (one-to-many)
 
-Address / PaymentMethod → User (через Checkout)
+Address / PaymentMethod → User (via Checkout)
 
-## 🤝 Вклад и контрибьюция
-Проект создан для демонстрации экспертизы в разработке бэкенда.
-Если вы хотите помочь – открывайте issue или pull request (следуйте принятому стилю кода, пишите тесты).
+## 🤝 Contributing
+This project was created to demonstrate backend development expertise.
+If you wish to help – open an issue or pull request (follow the coding style, write tests).
 
 ## 📄 Лицензия
-UNLICENSED – этот код предназначен только для портфолио и образовательных целей. Не используйте в коммерческих проектах без разрешения автора.
+**UNLICENSED** – This code is intended solely for portfolio and educational purposes. Do not use it in commercial projects without the author's permission.
 
-👤 Author & EB‑1A Context
-GitHub: @bizyukov
+## 👤 Author & EB‑1A Context
+**GitHub:** @bizyukov
 This repository is part of a curated portfolio documenting 15+ years of software development, supporting an EB‑1A extraordinary ability visa petition under the original contributions criterion.
 
 ## ✉️ Контакты
-Автор: @bizyukov – [ссылка на LinkedIn / Telegram]
+Author: @bizyukov – [ссылка на LinkedIn / Telegram]
 
-⭐ Если этот проект был полезен, поставьте звезду! Это помогает мотивировать меня на дальнейшее развитие.
+⭐ If this project was helpful, give it a star! It helps motivate me to keep improving.
