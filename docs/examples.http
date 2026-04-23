@@ -1,0 +1,243 @@
+### API Examples for E‑Commerce Backend
+### NestJS + PostgreSQL
+### Use VS Code REST Client extension or similar
+
+### Variables (adjust as needed)
+@baseUrl = http://localhost:3000/api
+@authToken = {{login.response.body.access_token}}
+
+###############################################
+# 1. Authentication (Auth)
+###############################################
+
+### Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "password123",
+  "role": "user"
+}
+
+### Login (get JWT token)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Get current user profile (requires token)
+GET {{baseUrl}}/user/profile
+Authorization: Bearer {{authToken}}
+
+###############################################
+# 2. Products (public endpoints)
+###############################################
+
+### Get products list (paginated + filters)
+GET {{baseUrl}}/products?page=1&limit=10&isActive=true
+
+### Get latest products (new arrivals)
+GET {{baseUrl}}/products/new?limit=5
+
+### Get popular products (top 5)
+GET {{baseUrl}}/products/popular?limit=5
+
+### Get product by ID
+GET {{baseUrl}}/products/1
+
+### Search products by name
+GET {{baseUrl}}/products?search=laptop
+
+### Filter by category and price range
+GET {{baseUrl}}/products?categoryId=1&minPrice=1000&maxPrice=50000
+
+###############################################
+# 3. Cart (requires authentication)
+###############################################
+
+### Get current user's cart
+GET {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+
+### Add product to cart (productId=1, quantity=2)
+POST {{baseUrl}}/cart/items
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+### Update cart item quantity (productId=1, quantity=5)
+PUT {{baseUrl}}/cart/items/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+### Remove product from cart (productId=1)
+DELETE {{baseUrl}}/cart/items/1
+Authorization: Bearer {{authToken}}
+
+### Clear entire cart
+DELETE {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+
+###############################################
+# 4. Checkout (addresses & payment methods)
+###############################################
+
+### Get all addresses of current user
+GET {{baseUrl}}/checkout/addresses
+Authorization: Bearer {{authToken}}
+
+### Add a new address
+POST {{baseUrl}}/checkout/addresses
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "fullName": "Ivan Ivanov",
+  "street": "Lenina St, 10, apt 5",
+  "city": "Moscow",
+  "region": "Moscow Oblast",
+  "zipCode": "101000",
+  "country": "Russia",
+  "phone": "+7 (999) 123-45-67",
+  "isDefault": true
+}
+
+### Get all payment methods of current user
+GET {{baseUrl}}/checkout/payment-methods
+Authorization: Bearer {{authToken}}
+
+### Add a payment method (e.g., credit card)
+POST {{baseUrl}}/checkout/payment-methods
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "type": "credit_card",
+  "details": {
+    "cardNumber": "**** **** **** 1234",
+    "expiry": "12/26",
+    "cardholderName": "Ivan Ivanov"
+  },
+  "isDefault": true
+}
+
+###############################################
+# 5. Orders
+###############################################
+
+### Create an order from current cart (using address & payment method IDs)
+POST {{baseUrl}}/orders
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "shippingAddressId": 1,
+  "paymentMethodId": 1,
+  "notes": "Call one hour before delivery"
+}
+
+### Get current user's orders
+GET {{baseUrl}}/orders/user
+Authorization: Bearer {{authToken}}
+
+### Get order by UUID (example)
+GET {{baseUrl}}/orders/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{authToken}}
+
+### Cancel an order (only if status is PENDING or PROCESSING)
+PUT {{baseUrl}}/orders/00000000-0000-0000-0000-000000000000/cancel
+Authorization: Bearer {{authToken}}
+
+### Repeat an order (create a new order based on previous)
+POST {{baseUrl}}/orders/00000000-0000-0000-0000-000000000000/repeat
+Authorization: Bearer {{authToken}}
+
+###############################################
+# 6. Admin endpoints (require role: admin/manager)
+###############################################
+
+### Get all users (admin)
+GET {{baseUrl}}/admin/users?page=1&limit=10
+Authorization: Bearer {{authToken}}
+
+### Create a new user (admin)
+POST {{baseUrl}}/admin/users
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "New User",
+  "email": "newuser@example.com",
+  "password": "password123",
+  "role": "user"
+}
+
+### Update user role (admin)
+PATCH {{baseUrl}}/admin/users/2/role
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "role": "manager"
+}
+
+### Block a user
+PATCH {{baseUrl}}/admin/users/2/block
+Authorization: Bearer {{authToken}}
+
+### Get all orders (admin/manager)
+GET {{baseUrl}}/admin/orders?page=1&limit=10&status=PENDING
+Authorization: Bearer {{authToken}}
+
+### Update order status (admin/manager)
+PUT {{baseUrl}}/admin/orders/00000000-0000-0000-0000-000000000000/status
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "status": "SHIPPED",
+  "trackingNumber": "TRACK123456"
+}
+
+### Create a product (admin/manager)
+POST {{baseUrl}}/admin/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "New Product",
+  "description": "Product description",
+  "price": 1999,
+  "stockQuantity": 100,
+  "categoryId": 1,
+  "manufacturerId": 1,
+  "isActive": true
+}
+
+### Update a product (admin/manager)
+PUT {{baseUrl}}/admin/products/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "price": 2499,
+  "stockQuantity": 50
+}
+
+### Delete a product (admin/manager)
+DELETE {{baseUrl}}/admin/products/1
+Authorization: Bearer {{authToken}}
