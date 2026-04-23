@@ -17,7 +17,7 @@ import { LocalStrategy } from './local.strategy';
     SequelizeModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
         signOptions: {
           expiresIn: configService.get('JWT_ACCESS_EXPIRES') || '15m',

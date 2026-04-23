@@ -211,11 +211,7 @@ export class OrdersService {
       throw new NotFoundException('Заказ не найден');
     }
 
-    if (
-      ![OrderStatus.PENDING, OrderStatus.PROCESSING].includes(
-        order.status as OrderStatus,
-      )
-    ) {
+    if (![OrderStatus.PENDING, OrderStatus.PROCESSING].includes(order.status)) {
       throw new Error('Невозможно отменить заказ в текущем статусе');
     }
 

@@ -74,7 +74,7 @@ export class AuthService {
     }
   }
 
-  private async generateTokens(user: Partial<User>): Promise<Tokens> {
+  private generateTokens(user: Partial<User>): Promise<Tokens> {
     const payload = {
       role: user.role,
       email: user.email,

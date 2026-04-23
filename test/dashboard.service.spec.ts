@@ -108,7 +108,7 @@ describe('DashboardService', () => {
       expect(orderModel.findAll).toHaveBeenCalledWith(
         expect.objectContaining({
           limit: 5,
-        })
+        }),
       );
     });
   });
@@ -139,7 +139,7 @@ describe('DashboardService', () => {
       await service.getTopProducts();
 
       expect(sequelize.query).toHaveBeenCalledWith(
-        expect.stringContaining('LIMIT 5')
+        expect.stringContaining('LIMIT 5'),
       );
     });
   });

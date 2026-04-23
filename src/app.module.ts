@@ -17,6 +17,13 @@ import { Manufacturer } from './manufacturers/manufacturer.model';
 import { OrderItem } from './orders/order-item.model';
 import { Order } from './orders/order.model';
 import { User } from './user/user.model';
+import { AdminModule } from './admin/admin.module';
+import { UserModule } from './user/user.module';
+import { ProductsModule } from './products/products.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ManufacturersModule } from './manufacturers/manufacturers.module';
+import { OrdersModule } from './orders/orders.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -47,13 +54,13 @@ import { User } from './user/user.model';
       synchronize: true,
     }),
     AuthModule,
-    //AdminModule,
-    //UserModule,
-    //ProductsModule,
-    //CategoriesModule,
-    //ManufacturersModule,
-    //OrdersModule,
-    //CartModule,
+    AdminModule,
+    UserModule,
+    ProductsModule,
+    CategoriesModule,
+    ManufacturersModule,
+    OrdersModule,
+    CartModule,
     CheckoutModule,
   ],
 })
