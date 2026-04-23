@@ -2,8 +2,6 @@
 
 [![Sequelize](https://img.shields.io/badge/Sequelize-6.x-blue?logo=sequelize)](https://sequelize.org/)
 [![Swagger](https://img.shields.io/badge/Swagger-UI-green?logo=swagger)](https://swagger.io/)
-[![CI](https://github.com/bizyukov/internet-magazin-back/actions/workflows/ci.yml/badge.svg)](https://github.com/bizyukov/internet-magazin-back/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.x-brightgreen)](https://nodejs.org)
 [![NestJS Version](https://img.shields.io/badge/nestjs-11.x-red)](https://nestjs.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.x-blue)](https://postgresql.org)
