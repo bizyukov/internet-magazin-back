@@ -1,98 +1,135 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🛒 E‑commerce Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-red?logo=nestjs)](https://nestjs.com/)
+[![Sequelize](https://img.shields.io/badge/Sequelize-6.x-blue?logo=sequelize)](https://sequelize.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.x-blue?logo=postgresql)](https://www.postgresql.org/)
+[![Swagger](https://img.shields.io/badge/Swagger-UI-green?logo=swagger)](https://swagger.io/)
+[![License](https://img.shields.io/badge/License-UNLICENSED-red)](LICENSE)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Полнофункциональное REST API для интернет-магазина с аутентификацией, корзиной, заказами, администрированием и документированным Swagger.
 
-## Description
+## 🚀 Основные возможности
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Аутентификация и авторизация** – JWT, роли (user, admin, manager, content)
+- **Пользователи** – регистрация, профиль, смена пароля, блокировка
+- **Товары** – CRUD, фильтрация (поиск, категория, производитель, цена), популярные/новые товары
+- **Категории** – древовидная структура, позиционирование
+- **Производители** – CRUD, фильтрация по стране
+- **Корзина** – добавление, обновление количества, удаление, очистка
+- **Заказы** – создание из корзины, изменение статуса, отмена, повтор заказа
+- **Checkout** – сохранённые адреса и способы оплаты
+- **Swagger UI** – интерактивная документация (доступна по `/swagger`)
+- **Валидация DTO** (class-validator)
+- **Sequelize ORM** с миграциями и связями (paranoid – мягкое удаление)
 
-## Project setup
+## 🧱 Технологии
 
-```bash
-$ npm install
-```
+- [NestJS](https://nestjs.com/) (TypeScript)
+- [Sequelize](https://sequelize.org/) + [sequelize-typescript](https://github.com/RobinBuschmann/sequelize-typescript)
+- [PostgreSQL](https://www.postgresql.org/)
+- [JWT](https://jwt.io/) (passport-jwt, passport-local)
+- [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
+- [Swagger](https://swagger.io/) (@nestjs/swagger)
 
-## Compile and run the project
+## 📦 Установка и запуск
 
-```bash
-# development
-$ npm run start
+### Требования
 
-# watch mode
-$ npm run start:dev
+- Node.js (20+)
+- PostgreSQL (16+)
 
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+### Шаги
 
 ```bash
-# unit tests
-$ npm run test
+# 1. Клонируйте репозиторий
+git clone https://github.com/your-username/ecommerce-backend.git
+cd ecommerce-backend
 
-# e2e tests
-$ npm run test:e2e
+# 2. Установите зависимости
+npm install
 
-# test coverage
-$ npm run test:cov
+# 3. Создайте файл .env в корне (пример):
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=ecommerce
+JWT_SECRET=mysecretkey
+JWT_EXPIRES_IN=1h
+PORT=3000
+
+# 4. Запустите PostgreSQL и создайте базу данных (через psql или pgAdmin)
+
+# 5. Запустите приложение (режим разработки)
+npm run start:dev
+
+# 6. Откройте документацию Swagger
+http://localhost:3000/swagger
 ```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+## 🧪 Тестирование
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Unit тесты
+npm test
+
+# Покрытие
+npm run test:cov
+
+# E2E тесты
+npm run test:e2e
 ```
+## 📁 Структура проекта (основные модули)
+```bash
+src/
+├── auth/              # JWT, local стратегии, guards
+├── user/              # Пользователи (модель, сервис, контроллер)
+├── products/          # Товары (CRUD, фильтры, популярное/новое)
+├── categories/        # Категории (дерево, позиционирование)
+├── manufacturers/     # Производители
+├── cart/              # Корзина и элементы корзины
+├── orders/            # Заказы и позиции заказов
+├── checkout/          # Адреса, платежные методы
+├── common/            # Guards, decorators, enums, filters
+├── config/            # Конфигурация (database, jwt)
+└── main.ts            # Входная точка (CORS, Swagger)
+```
+## 🔐 Роли и доступ
+Роль	Доступ
+user	просмотр товаров, управление своей корзиной, создание/просмотр заказов
+admin	всё, включая блокировку пользователей, изменение ролей
+manager	управление товарами, категориями, производителями, заказами
+content	(опционально) управление контентом
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📝 API документация
+После запуска перейдите на http://localhost:3000/swagger.
+Все эндпоинты, защищённые JWT, требуют передачи заголовка:
+```bash
+Authorization: Bearer <ваш_токен>
+```
+## 🗄️ Модели данных (основные связи)
+User → Order, Cart
 
-## Resources
+Product → Category, Manufacturer, OrderItem, CartItem
 
-Check out a few resources that may come in handy when working with NestJS:
+Category → самореференция (parentId → children)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Order → OrderItem (один ко многим)
 
-## Support
+Cart → CartItem (один ко многим)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Address / PaymentMethod → User (через Checkout)
 
-## Stay in touch
+## 🤝 Вклад и контрибьюция
+Проект создан для демонстрации экспертизы в разработке бэкенда.
+Если вы хотите помочь – открывайте issue или pull request (следуйте принятому стилю кода, пишите тесты).
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 📄 Лицензия
+UNLICENSED – этот код предназначен только для портфолио и образовательных целей. Не используйте в коммерческих проектах без разрешения автора.
 
-## License
+👤 Author & EB‑1A Context
+GitHub: @bizyukov
+This repository is part of a curated portfolio documenting 15+ years of software development, supporting an EB‑1A extraordinary ability visa petition under the original contributions criterion.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## ✉️ Контакты
+Автор: @bizyukov – [ссылка на LinkedIn / Telegram]
+
+⭐ Если этот проект был полезен, поставьте звезду! Это помогает мотивировать меня на дальнейшее развитие.
