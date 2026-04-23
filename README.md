@@ -1,10 +1,29 @@
 # 🛒 E‑commerce Backend API
 
-[![NestJS](https://img.shields.io/badge/NestJS-11.x-red?logo=nestjs)](https://nestjs.com/)
 [![Sequelize](https://img.shields.io/badge/Sequelize-6.x-blue?logo=sequelize)](https://sequelize.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.x-blue?logo=postgresql)](https://www.postgresql.org/)
 [![Swagger](https://img.shields.io/badge/Swagger-UI-green?logo=swagger)](https://swagger.io/)
-[![License](https://img.shields.io/badge/License-UNLICENSED-red)](LICENSE)
+[![CI](https://github.com/bizyukov/internet-magazin-back/actions/workflows/ci.yml/badge.svg)](https://github.com/bizyukov/internet-magazin-back/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/bizyukov/internet-magazin-back/branch/main/graph/badge.svg)](https://codecov.io/gh/bizyukov/internet-magazin-back)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.x-brightgreen)](https://nodejs.org)
+[![NestJS Version](https://img.shields.io/badge/nestjs-11.x-red)](https://nestjs.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.x-blue)](https://postgresql.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+
+
+
+<!-- Набор бейджей для вашего README -->
+<p align="left">
+  <!-- CI/CD Статус сборки -->
+  <a href="https://github.com/bizyukov/internet-magazin-back/actions"><img src="https://github.com/bizyukov/internet-magazin-back/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI Status"></a>
+  <!-- Покрытие кода (после настройки Codecov) -->
+  <a href="https://codecov.io/gh/bizyukov/internet-magazin-back" > <img src="https://codecov.io/gh/bizyukov/internet-magazin-back/branch/main/graph/badge.svg?token=YOUR_NEW_CODECOV_TOKEN" alt="Code Coverage" /> </a>
+  <!-- Качество кода от SonarCloud -->
+  <a href="https://sonarcloud.io/project/overview?id=bizyukov_internet-magazin-back"><img src="https://sonarcloud.io/api/project_badges/measure?project=bizyukov_internet-magazin-back&metric=alert_status" alt="Quality Gate Status"></a>
+  <!-- Лицензия MIT -->
+  <img src="https://img.shields.io/github/license/bizyukov/internet-magazin-back" alt="License">
+</p>
 
 Полнофункциональное REST API для интернет-магазина с аутентификацией, корзиной, заказами, администрированием и документированным Swagger.
 
